@@ -15,10 +15,10 @@
 
 <body>
 <h1>Monitoring</h1>
-<p>Welcome to the monitoring screen. From here you can obtain the current weight of any objects in the container and obtain the most current image of the container via the remote camera.</p>
+<p>Welcome to the monitoring screen. From here you can obtain the current weight of any objects in the container and obtain the most current image of the container via the remote camera. </p>
 <div>
 <h2>Archive</h2>
-<p>Select a specific date from the drop down menus below. <br>Once you press "Submit", your browser will be redirected to a gallery of images from that day. </p>
+<p>Select a specific date from the drop-down menus below. <br>Once you press "Submit", your browser will be redirected to a gallery of images from that day. </p>
 <form class="sub" action="./archive.php" method="post">
   Select a date:
   <select name="day">
@@ -82,13 +82,24 @@
 <div>
 <h2>Weight</h2>
 <p>The current weight of items inside the SPDS is:<p>
+<div class="sub">
+<?php
+  $weight = hexdec(`sudo python /var/www/html/scripts/serial_control.py W`);
+  $var = `cat /var/www/html/weight.txt`;
+  $displayed = $weight - $var;
+  $true_weight = $displayed * 65;
+  echo $true_weight,"g";
+?>
+</div>
 </div>
 
 <div>
   <h2>Location Check</h2>
   <p>This image is taken whenever the archive of pictures is updated. It is not triggered by the motion sensor.<br>To view activity caught by the motion sensor, use the "Archive" section above.<br>To update the archive, as well as the image below will be updated every 10 minutes.</p>
   <img src="archive/live.jpg" width="1280" height="720" class="center">
+<br>
 </div>
 
+<br><br>
 <a href="./Advanced.php">Advanced Feature Controls</a>
 </body>

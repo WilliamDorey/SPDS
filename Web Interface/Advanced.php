@@ -27,13 +27,11 @@ input[type="radio"]:checked ~ .reveal-if-active, input[type="checkbox"]:checked 
 }
 </style>
 
-<script>
-
-</script>
 </head>
 
 <H1>Advance Monitoring and Control</H1>
 <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+<div>
   <p>Do you want to change the passcode of the SPDS?</p>
 
   <input type="radio" id="pass-no" name="pass-yes-no" value="no" checked required>
@@ -45,10 +43,9 @@ input[type="radio"]:checked ~ .reveal-if-active, input[type="checkbox"]:checked 
   <div class="reveal-if-active">
     <label for="newpass">Enter the desired passscode (must be 6 numbers):</label>
     <input type="text" id="newpass" name="passcode" class="require-if-active" data-require-pair="#pass-yes" >
-    <input type="submit">
   </div>
   </div>
-</form>
+
 <?php
   $code = "";
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -63,14 +60,56 @@ input[type="radio"]:checked ~ .reveal-if-active, input[type="checkbox"]:checked 
    }
   }
 ?>
+</div>
 
 <br><br>
+<div>
 <p>The weight inside the SPDS is currently:</p>
 <?php
   `sudo python /var/www/html/scripts/serial_control.py W`;
-  $weight = `sudo python /var/www/html/scripts/serial_control.py W`;
-  echo $weight;
+  $weight = hexdec(`sudo python /var/www/html/scripts/serial_control.py W`);
+  echo "The value from the weight sensor is: ",$weight;
 ?>
-
 <br>
+<?php
+  if($_SERVER["REQUEST_METHOD"] == "POST"){
+   $zero = $_POST["zero"];
+   if($zero == "yes"){
+    `sudo echo $weight > /var/www/html/weight.txt`;
+   }
+  }
+  $var = `cat /var/www/html/weight.txt`;
+  $displayed = $weight - $var;
+  echo "The value that is used to calculate is: ",$displayed,"<br>";
+  $true_weight = $displayed * 65;
+  echo "The weight is:",$true_weight,"g";
+?>
+ <p>Do you want to zero the scale?</p>
+ <input type="radio" name="zero" value="no" id="zero-no" checked required>
+ <label>No</label>
+ <input type="radio" name="zero" value="yes" id="zero-yes" required>
+ <label>Yes</label>
+</div>
+<br>
+
+<div>
+ <p>Do you want to clear the archives?</p>
+ <input type="radio" name="clear-archive" value="no" id="clear-archive-no" checked required>
+ <label>NO</label>
+ <input type="radio" name="clear-archive" value="yes" id="clear-archive-yes" required>
+ <label>YES</label>
+ <?php
+  if($_SERVER["REQUEST_METHOD"] == "POST"){
+   $clear-archive == $_POST["clear-archive"];
+   if($clear-archive == "yes"){
+    `sudo rm -r /var/www/html/archive/*`;
+   }
+  }
+ ?>
+</div>
+<br><br>
+<input type="submit">
+</form>
+<br>
+
 <a href="./index.php">Return to Home Page</a>

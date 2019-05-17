@@ -1,3 +1,9 @@
+#
+# Python script to send and receive serial communications
+# to control the embedded circuit
+#
+# Located in the scripts section of the webserver
+
 import	serial
 import	sys
 from	time	import	sleep
@@ -11,6 +17,7 @@ port.write("1")
 port.read()
 port.write("1")
 
+# If the argument is an 'S' send 6 numbers out
 if argument == 'S' :
   code = list(sys.argv[2])
   i = 0
@@ -20,6 +27,7 @@ if argument == 'S' :
     i = i + 1
   print("Passcode Updated Successful!")
 
+# If the arguement is 'W' recieve 2 Hexadecimal characters
 elif argument == 'W' :
   val = ''
   i = 0
